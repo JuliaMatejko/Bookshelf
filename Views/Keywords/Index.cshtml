@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Bookshelf.Models.Keyword>
+
+@{
+    ViewData["Title"] = "Keywords";
+}
+
+<h1>Keywords</h1>
+<br />
+<p>
+    <a class="btn btn-outline-success" asp-action="Create">Add A New Keyword +</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.KeywordID)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.KeywordID)
+            </td>
+            <td>
+                <a class="btn btn-outline-primary">Find books >></a><!--Add action-->
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.KeywordID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

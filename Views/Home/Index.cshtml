@@ -4,6 +4,17 @@
 
 <div class="text-center">
     <h1 class="display-4">Bookshelf</h1>
-    <p>All your books listed in a one place, easy to manage.<a asp-area="" asp-controller="Books" asp-action="Index"> <br /> Check book database >></a></p>
+    <p>All your books listed in a one place, easy to manage.
+        <a asp-controller="Books" asp-action="Index"><br /> 
+        Check book database >>
+        </a><br /> 
+        <a asp-area="Identity" asp-page="/Account/Login">
+            Log in
+        </a> or 
+        <a asp-area="Identity" asp-page="/Account/Register">
+            Register
+        </a> 
+    to create your own bookshelf, rate, review and add reading status to your books
+    </p>
     <div style="background-color: #ce9e9e"><img src="~/static/background.jpg" alt="background picture" height="600" /></div>
 </div>
