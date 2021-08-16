@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Bookshelf.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Books Database</h1>
+
+<p>
+    <a class="btn btn-outline-success" asp-action="Create">Add A New Book +</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Author
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddedOn)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @foreach (var i in item.AuthorsBooks)
+                {
+                    @Html.DisplayFor(modelItem => i.Author.FullName)
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddedOn)
+            </td>
+            <td>
+                <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.BookID">Details</a>
+                <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.BookID">Edit</a>
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.BookID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
