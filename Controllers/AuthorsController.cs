@@ -34,7 +34,10 @@ namespace Bookshelf.Controllers
             }
 
             var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.AuthorID == id);
+                        .Include(b => b.AuthorsBooks)
+                            .ThenInclude(e => e.Book)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.AuthorID == id);
             if (author == null)
             {
                 return NotFound();
@@ -50,8 +53,6 @@ namespace Bookshelf.Controllers
         }
 
         // POST: Authors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AuthorID,FirstName,SecondName,LastName")] Author author)
@@ -82,8 +83,6 @@ namespace Bookshelf.Controllers
         }
 
         // POST: Authors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AuthorID,FirstName,SecondName,LastName")] Author author)
@@ -125,6 +124,9 @@ namespace Bookshelf.Controllers
             }
 
             var author = await _context.Authors
+                .Include(b => b.AuthorsBooks)
+                    .ThenInclude(e => e.Book)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.AuthorID == id);
             if (author == null)
             {
