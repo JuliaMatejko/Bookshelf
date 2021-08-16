@@ -1,0 +1,45 @@
+﻿@model Bookshelf.Models.Keyword
+
+@{
+    ViewData["Title"] = "Find Books";
+}
+
+<h1>Find Books with keyword <span class="font-weight-bold">@Html.DisplayFor(model => model.KeywordID)</span></h1>
+<br />
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Author
+                </th>
+                <th>
+                    Title
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.BookKeyword)
+            {
+                <tr>
+                    <td>
+                        @foreach (var i in item.Book.AuthorsBooks)
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName)  </span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book.Title)
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-info" asp-controller="Books" asp-action="Details" asp-route-id="@item.Book.BookID">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+</div>

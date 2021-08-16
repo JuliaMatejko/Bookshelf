@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
@@ -17,6 +14,30 @@ namespace Bookshelf.Controllers
         public KeywordsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        // GET: Keywords/FindBooks/5
+        public async Task<IActionResult> FindBooks(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var keyword = await _context.Kewords
+                .Include(b => b.BookKeyword)
+                    .ThenInclude(e => e.Book)
+                        .ThenInclude(f => f.AuthorsBooks)
+                            .ThenInclude(g => g.Author)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.KeywordID == id);
+
+            if (keyword == null)
+            {
+                return NotFound();
+            }
+
+            return View(keyword);
         }
 
         // GET: Keywords

@@ -23,7 +23,7 @@
                 @Html.DisplayFor(modelItem => item.KeywordID)
             </td>
             <td>
-                <a class="btn btn-outline-primary">Find books >></a><!--Add action-->
+                <a class="btn btn-outline-primary" asp-action="FindBooks" asp-route-id="@item.KeywordID">Find books >></a>
                 <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.KeywordID">Delete</a>
             </td>
         </tr>

@@ -30,7 +30,7 @@
             <td>
                 @foreach (var i in item.AuthorsBooks)
                 {
-                    @Html.DisplayFor(modelItem => i.Author.FullName)
+                    <span>@Html.DisplayFor(modelItem => i.Author.FullName)  </span>
                 }
             </td>
             <td>
