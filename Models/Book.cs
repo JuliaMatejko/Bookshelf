@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bookshelf.Models
 {
@@ -12,9 +13,18 @@ namespace Bookshelf.Models
         public string Title { get; set; }
         [Required]
         [DataType(DataType.Date)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Added On")]
-        public DateTime AddedOn { get; set; }
+        public DateTime AddedOn
+        {
+            get
+            {
+                return dateCreated ?? DateTime.Now;
+            }
+            set => dateCreated = value;
+        }
+        private DateTime? dateCreated;
 #nullable enable
         [DisplayFormat(NullDisplayText = "No description")]
         [StringLength(5000)]

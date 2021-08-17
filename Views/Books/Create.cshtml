@@ -12,37 +12,41 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
             <div class="form-group">
-                <label asp-for="AuthorsBooks" class="control-label"></label>
-                <select asp-for="AuthorsBooks" class="form-control" asp-items="ViewBag.AuthorID">
-                    <option value="">-- Select Author --</option>
-                </select>
-                <span asp-validation-for="AuthorsBooks" class="text-danger" />
-            </div>
+                <label class="control-label" for="authors">Author</label>
+                <select class="form-control" id="authors" name="selectedAuthors" multiple size="6">
+                    @{
+                        List<Bookshelf.Models.ViewModels.AssignedAuthorData> authors = ViewBag.Authors;
 
-            <div class="form-group">
-                <label asp-for="BooksKeywords" class="control-label"></label>
-                <select asp-for="BooksKeywords" class="form-control" asp-items="ViewBag.KeywordID">
-                    <option value="">-- Select Keyword --</option>
+                        foreach (var author in authors)
+                        {
+                            @:<option value="@author.AuthorID" @(Html.Raw(author.Assigned ? "selected" : ""))>@author.FullName</option>
+                        }
+                    }
                 </select>
-                <span asp-validation-for="BooksKeywords" class="text-danger" />
             </div>
-
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AddedOn" class="control-label"></label>
-                <input asp-for="AddedOn" class="form-control" />
-                <span asp-validation-for="AddedOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="keywords">Keywords</label>
+                <select class="form-control" id="keywords" name="selectedKeywords" multiple size="6">
+                    @{
+                        List<Bookshelf.Models.ViewModels.AssignedKeywordData> keywords = ViewBag.Keywords;
+
+                        foreach (var keyword in keywords)
+                        {
+                            @:<option value="@keyword.KeywordID" @(Html.Raw(keyword.Assigned ? "selected" : ""))>@keyword.KeywordID</option>
+                        }
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-success" />

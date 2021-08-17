@@ -93,8 +93,8 @@ namespace Bookshelf.Controllers
             var book = new Book();
             book.AuthorsBooks = new List<AuthorBook>();
             book.BooksKeywords = new List<BookKeyword>();
-            PopulateAuthorsDropDownList(book);
-            PopulateKeywordsDropDownList(book);
+            PopulateAssignedAuthorData(book);
+            PopulateAssignedKeywordData(book);
             return View();
         }
 
@@ -108,7 +108,7 @@ namespace Bookshelf.Controllers
                 book.AuthorsBooks = new List<AuthorBook>();
                 foreach (var author in selectedAuthors)
                 {
-                    var authorToAdd = new AuthorBook { BookID = book.BookID, AuthorID = author }; //!
+                    var authorToAdd = new AuthorBook { BookID = book.BookID, AuthorID = author };
                     book.AuthorsBooks.Add(authorToAdd);
                 }
             }
@@ -117,7 +117,7 @@ namespace Bookshelf.Controllers
                 book.BooksKeywords = new List<BookKeyword>();
                 foreach (var keyword in selectedKeywords)
                 {
-                    var keywordToAdd = new BookKeyword { BookID = book.BookID, KeywordID = keyword }; //!
+                    var keywordToAdd = new BookKeyword { BookID = book.BookID, KeywordID = keyword };
                     book.BooksKeywords.Add(keywordToAdd);
                 }
             }
@@ -128,8 +128,8 @@ namespace Bookshelf.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ;
-            PopulateAuthorsDropDownList(book);
-            PopulateKeywordsDropDownList(book);
+            PopulateAssignedAuthorData(book);
+            PopulateAssignedKeywordData(book);
             return View(book);
         }
 
@@ -262,22 +262,6 @@ namespace Bookshelf.Controllers
                     }
                 }
             }
-        }
-
-        private void PopulateAuthorsDropDownList(object selectedAuthor = null)
-        {
-            var authorsQuery = from a in _context.Authors
-                                   orderby a.LastName
-                                   select a;
-            ViewBag.AuthorID = new SelectList(authorsQuery.AsNoTracking(), "AuthorID", "FullName", selectedAuthor);
-        }
-
-        private void PopulateKeywordsDropDownList(object selectedKeyword = null)
-        {
-            var keywordsQuery = from k in _context.Kewords
-                                   orderby k.KeywordID
-                                   select k;
-            ViewBag.KeywordID = new SelectList(keywordsQuery.AsNoTracking(), "KeywordID", "KeywordID", selectedKeyword);
         }
 
         // GET: Books/Delete/5
