@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
+using Bookshelf.Models.ViewModels;
 
 namespace Bookshelf.Controllers
 {
@@ -53,19 +54,73 @@ namespace Bookshelf.Controllers
             return View(book);
         }
 
+        private void PopulateAssignedAuthorData(Book book)
+        {
+            var allAuthors = _context.Authors;
+            var authorsOfBooks = new HashSet<int>(book.AuthorsBooks.Select(c => c.AuthorID));
+            var viewModel = new List<AssignedAuthorData>();
+            foreach (var author in allAuthors)
+            {
+                viewModel.Add(new AssignedAuthorData
+                {
+                    AuthorID = author.AuthorID,
+                    FullName = author.FullName, //!
+                    Assigned = authorsOfBooks.Contains(author.AuthorID)
+                });
+            }
+            ViewData["Authors"] = viewModel;
+        }
+
+        private void PopulateAssignedKeywordData(Book book)
+        {
+            var allKeywords = _context.Kewords;
+            var bookKeywords = new HashSet<string>(book.BooksKeywords.Select(c => c.KeywordID));
+            var viewModel = new List<AssignedKeywordData>();
+            foreach (var keyword in allKeywords)
+            {
+                viewModel.Add(new AssignedKeywordData
+                {
+                    KeywordID = keyword.KeywordID,//!
+                    Assigned = bookKeywords.Contains(keyword.KeywordID)
+                });
+            }
+            ViewData["Keywords"] = viewModel;
+        }
+
         // GET: Books/Create
         public IActionResult Create()
         {
-            PopulateAuthorsDropDownList();
-            PopulateKeywordsDropDownList();
+            var book = new Book();
+            book.AuthorsBooks = new List<AuthorBook>();
+            book.BooksKeywords = new List<BookKeyword>();
+            PopulateAuthorsDropDownList(book);
+            PopulateKeywordsDropDownList(book);
             return View();
         }
 
         // POST: Books/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookID,Title,AddedOn,Description")] Book book)
+        public async Task<IActionResult> Create([Bind("Title,AddedOn,Description,AuthorsBooks,BooksKeywords")] Book book, int[] selectedAuthors, string[] selectedKeywords)
         {
+            if (selectedAuthors != null)
+            {
+                book.AuthorsBooks = new List<AuthorBook>();
+                foreach (var author in selectedAuthors)
+                {
+                    var authorToAdd = new AuthorBook { BookID = book.BookID, AuthorID = author }; //!
+                    book.AuthorsBooks.Add(authorToAdd);
+                }
+            }
+            if (selectedKeywords != null)
+            {
+                book.BooksKeywords = new List<BookKeyword>();
+                foreach (var keyword in selectedKeywords)
+                {
+                    var keywordToAdd = new BookKeyword { BookID = book.BookID, KeywordID = keyword }; //!
+                    book.BooksKeywords.Add(keywordToAdd);
+                }
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(book);
@@ -73,8 +128,8 @@ namespace Bookshelf.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ;
-            PopulateAuthorsDropDownList(book.AuthorsBooks.Select(s => s.AuthorID));
-            PopulateKeywordsDropDownList(book.BooksKeywords.Select(s => s.KeywordID));
+            PopulateAuthorsDropDownList(book);
+            PopulateKeywordsDropDownList(book);
             return View(book);
         }
 
@@ -87,50 +142,126 @@ namespace Bookshelf.Controllers
             }
 
             var book = await _context.Books
+                .Include(b => b.AuthorsBooks)
+                    .ThenInclude(e => e.Author)
+                 .Include(b => b.BooksKeywords)
+                    .ThenInclude(e => e.Keyword)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.BookID == id);
             if (book == null)
             {
                 return NotFound();
             }
-            PopulateAuthorsDropDownList(book.AuthorsBooks.Select(s => s.AuthorID));
-            PopulateKeywordsDropDownList(book.BooksKeywords.Select(s => s.KeywordID));
+            PopulateAssignedAuthorData(book);
+            PopulateAssignedKeywordData(book);
             return View(book);
         }
 
         // POST: Books/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookID,Title,AddedOn,Description")] Book book)
+        public async Task<IActionResult> Edit(int? id, int[] selectedAuthors, string[] selectedKeywords)
         {
-            if (id != book.BookID)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var bookToUpdate = await _context.Books
+                               .Include(b => b.AuthorsBooks)
+                                    .ThenInclude(e => e.Author)
+                               .Include(b => b.BooksKeywords)
+                                    .ThenInclude(e => e.Keyword)
+                               .FirstOrDefaultAsync(s => s.BookID == id);
+
+            if (await TryUpdateModelAsync<Book>(
+                bookToUpdate,
+                "",
+                i => i.Title, i => i.AddedOn, i => i.Description))
             {
+                UpdateBookAuthors(selectedAuthors, bookToUpdate);
+                UpdateBookKeywords(selectedKeywords, bookToUpdate);
                 try
                 {
-                    _context.Update(book);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /*ex */)
                 {
-                    if (!BookExists(book.BookID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            PopulateAuthorsDropDownList(book.AuthorsBooks.Select(s => s.AuthorID));
-            PopulateKeywordsDropDownList(book.BooksKeywords.Select(s => s.KeywordID));
-            return View(book);
+            UpdateBookAuthors(selectedAuthors, bookToUpdate);
+            UpdateBookKeywords(selectedKeywords, bookToUpdate);
+            PopulateAssignedAuthorData(bookToUpdate);
+            PopulateAssignedKeywordData(bookToUpdate);
+            return View(bookToUpdate);
+        }
+
+        private void UpdateBookAuthors(int[] selectedAuthors, Book bookToUpdate)
+        {
+            if (selectedAuthors == null)
+            {
+                bookToUpdate.AuthorsBooks = new List<AuthorBook>();
+                return;
+            }
+
+            var selectedAuthorsHS = new HashSet<int>(selectedAuthors);
+            var booksAuthors = new HashSet<int>
+                (bookToUpdate.AuthorsBooks.Select(a => a.Author.AuthorID));
+            foreach (var author in _context.Authors)
+            {
+                if (selectedAuthorsHS.Contains(author.AuthorID))
+                {
+                    if (!booksAuthors.Contains(author.AuthorID))
+                    {
+                        bookToUpdate.AuthorsBooks.Add(new AuthorBook { BookID = bookToUpdate.BookID, AuthorID = author.AuthorID });
+                    }
+                }
+                else
+                {
+                    if (booksAuthors.Contains(author.AuthorID))
+                    {
+                        AuthorBook authorToRemove = bookToUpdate.AuthorsBooks.FirstOrDefault(i => i.AuthorID == author.AuthorID);
+                        _context.Remove(authorToRemove);
+                    }
+                }
+            }
+        }
+
+        private void UpdateBookKeywords(string[] selectedKeywords, Book bookToUpdate)
+        {
+            if (selectedKeywords == null)
+            {
+                bookToUpdate.BooksKeywords = new List<BookKeyword>();
+                return;
+            }
+
+            var selectedKeywordsHS = new HashSet<string>(selectedKeywords);
+            var booksKeywords = new HashSet<string>
+                (bookToUpdate.BooksKeywords.Select(k => k.Keyword.KeywordID));
+            foreach (var keyword in _context.Kewords)
+            {
+                if (selectedKeywordsHS.Contains(keyword.KeywordID))
+                {
+                    if (!booksKeywords.Contains(keyword.KeywordID))
+                    {
+                        bookToUpdate.BooksKeywords.Add(new BookKeyword { BookID = bookToUpdate.BookID, KeywordID = keyword.KeywordID });
+                    }
+                }
+                else
+                {
+
+                    if (booksKeywords.Contains(keyword.KeywordID))
+                    {
+                        BookKeyword courseToRemove = bookToUpdate.BooksKeywords.FirstOrDefault(i => i.KeywordID == keyword.KeywordID);
+                        _context.Remove(courseToRemove);
+                    }
+                }
+            }
         }
 
         private void PopulateAuthorsDropDownList(object selectedAuthor = null)
@@ -138,7 +269,7 @@ namespace Bookshelf.Controllers
             var authorsQuery = from a in _context.Authors
                                    orderby a.LastName
                                    select a;
-            ViewBag.AuthorID = new SelectList(authorsQuery.AsNoTracking(), "AuthorID", "LastName", selectedAuthor);
+            ViewBag.AuthorID = new SelectList(authorsQuery.AsNoTracking(), "AuthorID", "FullName", selectedAuthor);
         }
 
         private void PopulateKeywordsDropDownList(object selectedKeyword = null)
@@ -146,7 +277,7 @@ namespace Bookshelf.Controllers
             var keywordsQuery = from k in _context.Kewords
                                    orderby k.KeywordID
                                    select k;
-            ViewBag.KeywordtID = new SelectList(keywordsQuery.AsNoTracking(), "KeywordID", "KeywordID", selectedKeyword);
+            ViewBag.KeywordID = new SelectList(keywordsQuery.AsNoTracking(), "KeywordID", "KeywordID", selectedKeyword);
         }
 
         // GET: Books/Delete/5
