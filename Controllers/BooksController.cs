@@ -56,6 +56,8 @@ namespace Bookshelf.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
+            PopulateAuthorsDropDownList();
+            PopulateKeywordsDropDownList();
             return View();
         }
 
@@ -70,6 +72,9 @@ namespace Bookshelf.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ;
+            PopulateAuthorsDropDownList(book.AuthorsBooks.Select(s => s.AuthorID));
+            PopulateKeywordsDropDownList(book.BooksKeywords.Select(s => s.KeywordID));
             return View(book);
         }
 
@@ -81,11 +86,15 @@ namespace Bookshelf.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.BookID == id);
             if (book == null)
             {
                 return NotFound();
             }
+            PopulateAuthorsDropDownList(book.AuthorsBooks.Select(s => s.AuthorID));
+            PopulateKeywordsDropDownList(book.BooksKeywords.Select(s => s.KeywordID));
             return View(book);
         }
 
@@ -119,7 +128,25 @@ namespace Bookshelf.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            PopulateAuthorsDropDownList(book.AuthorsBooks.Select(s => s.AuthorID));
+            PopulateKeywordsDropDownList(book.BooksKeywords.Select(s => s.KeywordID));
             return View(book);
+        }
+
+        private void PopulateAuthorsDropDownList(object selectedAuthor = null)
+        {
+            var authorsQuery = from a in _context.Authors
+                                   orderby a.LastName
+                                   select a;
+            ViewBag.AuthorID = new SelectList(authorsQuery.AsNoTracking(), "AuthorID", "LastName", selectedAuthor);
+        }
+
+        private void PopulateKeywordsDropDownList(object selectedKeyword = null)
+        {
+            var keywordsQuery = from k in _context.Kewords
+                                   orderby k.KeywordID
+                                   select k;
+            ViewBag.KeywordtID = new SelectList(keywordsQuery.AsNoTracking(), "KeywordID", "KeywordID", selectedKeyword);
         }
 
         // GET: Books/Delete/5

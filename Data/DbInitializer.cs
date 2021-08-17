@@ -53,14 +53,14 @@ namespace Bookshelf.Data
 
             var books = new Book[]
             {
-                new Book{Title = "Solaris", AddedOn =  DateTime.Parse("29-07-2021"), Description = "book decription1"},
-                new Book{Title = "Metro 2033", AddedOn =  DateTime.Parse("31-07-2021"), Description = "book decription2"},
-                new Book{Title = "FUTU.RE", AddedOn =  DateTime.Parse("01-08-2021"), Description = "book decription3"},
-                new Book{Title = "The Three-Body Problem", AddedOn =  DateTime.Parse("03-08-2021"), Description = "book decription4"},
-                new Book{Title = "The Dark Forest", AddedOn =  DateTime.Parse("03-08-2021"), Description = "book decription5"},
-                new Book{Title = "Death's End", AddedOn =  DateTime.Parse("04-08-2021"), Description = "book decription6"},
-                new Book{Title = "A Study in Scarlet", AddedOn =  DateTime.Parse("11-08-2021"), Description = "book decription7"},
-                new Book{Title = "The Call of Cthulhu", AddedOn =  DateTime.Parse("14-08-2021"), Description = "book decription8"}
+                new Book{Title = "Solaris", AddedOn =  DateTime.Parse("29-07-2021"), Description = "book description1"},
+                new Book{Title = "Metro 2033", AddedOn =  DateTime.Parse("31-07-2021"), Description = "book description2"},
+                new Book{Title = "FUTU.RE", AddedOn =  DateTime.Parse("01-08-2021"), Description = "book description3"},
+                new Book{Title = "The Three-Body Problem", AddedOn =  DateTime.Parse("03-08-2021"), Description = "book description4"},
+                new Book{Title = "The Dark Forest", AddedOn =  DateTime.Parse("03-08-2021"), Description = "book description5"},
+                new Book{Title = "Death's End", AddedOn =  DateTime.Parse("04-08-2021"), Description = "book description6"},
+                new Book{Title = "A Study in Scarlet", AddedOn =  DateTime.Parse("11-08-2021"), Description = "book description7"},
+                new Book{Title = "The Call of Cthulhu", AddedOn =  DateTime.Parse("14-08-2021"), Description = "book description8"}
             };
             foreach (Book b in books)
             {
