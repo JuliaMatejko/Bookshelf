@@ -27,7 +27,7 @@ namespace Bookshelf.Models
         private DateTime? dateCreated;
 #nullable enable
         [DisplayFormat(NullDisplayText = "No description")]
-        [StringLength(5000)]
+        [MaxLength]
         public string? Description { get; set; }
 #nullable disable
 

@@ -7,7 +7,7 @@ namespace Bookshelf.Models
     {
         WantToRead = 0,
         ReadingRightNow = 1,
-        Read = 2
+        HaveRead = 2
     }
 
     public class UserBook
@@ -19,8 +19,11 @@ namespace Bookshelf.Models
         public int? Rating { get; set; }
 #nullable enable
         [DisplayFormat(NullDisplayText = "No review")]
+        [MaxLength]
         public string? Review { get; set; }
 #nullable disable
+        [Display(Name = "Book Status")]
+        [Required]
         public BookStatus BookStatus { get; set; }
 
         public Book Book { get; set; }

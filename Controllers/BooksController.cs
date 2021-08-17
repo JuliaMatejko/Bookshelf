@@ -21,7 +21,7 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
             return View(await _context.Books
                         .Include(b => b.AuthorsBooks)
