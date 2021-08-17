@@ -14,6 +14,19 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BookID" />
             <div class="form-group">
+                <label for="authors">Author</label>
+                <select id="authors" name="selectedAuthors" multiple size="6">
+                    @{
+                        List<Bookshelf.Models.ViewModels.AssignedAuthorData> authors = ViewBag.Authors;
+
+                        foreach (var author in authors)
+                        {
+                            @:<option value="@author.AuthorID" @(Html.Raw(author.Assigned ? "selected" : ""))>@author.FullName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
@@ -27,6 +40,19 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="keywords">Keywords</label>
+                <select id="keywords" name="selectedKeywords" multiple size="6">
+                    @{
+                        List<Bookshelf.Models.ViewModels.AssignedKeywordData> keywords = ViewBag.Keywords;
+
+                        foreach (var keyword in keywords)
+                        {
+                            @:<option value="@keyword.KeywordID" @(Html.Raw(keyword.Assigned ? "selected" : ""))>@keyword.KeywordID</option>
+                        }
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-success" />
