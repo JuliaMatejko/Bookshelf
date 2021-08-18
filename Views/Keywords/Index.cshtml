@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<Bookshelf.Models.Keyword>
-
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = "Keywords";
 }
@@ -7,8 +8,11 @@
 <h1>Keywords</h1>
 <br />
 <p>
-    <a class="btn btn-outline-success" asp-action="Create">Add A New Keyword +</a>
-</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a class="btn btn-outline-success" asp-action="Create">Add A New Keyword +</a>
+    }
+    </p>
 <table class="table">
     <thead>
         <tr>
@@ -17,16 +21,20 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.KeywordID)
-            </td>
-            <td>
-                <a class="btn btn-outline-primary" asp-action="FindBooks" asp-route-id="@item.KeywordID">Find books >></a>
-                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.KeywordID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.KeywordID)
+                </td>
+                <td>
+                    <a class="btn btn-outline-primary" asp-action="FindBooks" asp-route-id="@item.KeywordID">Find books >></a>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.KeywordID">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

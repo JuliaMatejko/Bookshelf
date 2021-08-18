@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookshelf.Controllers
 {
@@ -47,6 +48,7 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Keywords/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -55,6 +57,7 @@ namespace Bookshelf.Controllers
         // POST: Keywords/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("KeywordID")] Keyword keyword)
         {
             if (ModelState.IsValid)
@@ -67,6 +70,7 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Keywords/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -85,6 +89,7 @@ namespace Bookshelf.Controllers
         }
 
         // POST: Keywords/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

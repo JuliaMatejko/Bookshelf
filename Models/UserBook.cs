@@ -19,7 +19,7 @@ namespace Bookshelf.Models
         public int? Rating { get; set; }
 #nullable enable
         [DisplayFormat(NullDisplayText = "No review")]
-        [MaxLength]
+        [StringLength(7000)]
         public string? Review { get; set; }
 #nullable disable
         [Display(Name = "Book Status")]

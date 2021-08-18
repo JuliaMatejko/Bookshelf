@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
 using Bookshelf.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookshelf.Controllers
 {
@@ -88,6 +87,7 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books/Create
+        [Authorize]
         public IActionResult Create()
         {
             var book = new Book();
@@ -101,6 +101,7 @@ namespace Bookshelf.Controllers
         // POST: Books/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Title,AddedOn,Description,AuthorsBooks,BooksKeywords")] Book book, int[] selectedAuthors, string[] selectedKeywords)
         {
             if (selectedAuthors != null)
@@ -134,6 +135,7 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -160,6 +162,7 @@ namespace Bookshelf.Controllers
         // POST: Books/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int? id, int[] selectedAuthors, string[] selectedKeywords)
         {
             if (id == null)
@@ -265,6 +268,7 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -286,6 +290,7 @@ namespace Bookshelf.Controllers
         }
 
         // POST: Books/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

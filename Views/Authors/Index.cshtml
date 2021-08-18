@@ -1,13 +1,17 @@
 ﻿@model IEnumerable<Bookshelf.Models.Author>
-
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
 @{
     ViewData["Title"] = "Authors";
 }
 
-<h1>Authors Database</h1>
+<h1>Author Database</h1>
 <br />
 <p>
-    <a class="btn btn-outline-success"asp-action="Create">Add A New Author +</a>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a class="btn btn-outline-success" asp-action="Create">Add A New Author +</a>
+    }
 </p>
 <table class="table">
     <thead>
@@ -19,17 +23,21 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.AuthorID">Details</a>
-                <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.AuthorID">Edit</a>
-                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.AuthorID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.AuthorID">Details</a>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.AuthorID">Edit</a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.AuthorID">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
