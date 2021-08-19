@@ -24,13 +24,14 @@ namespace Bookshelf.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.UsersBooks
+            var model = await _context.UsersBooks
                         .Include(u => u.ApplicationUser)
                         .Include(b => b.Book)
                             .ThenInclude(u => u.AuthorsBooks)
                                 .ThenInclude(a => a.Author)
                          .AsNoTracking()
-                         .ToListAsync());
+                         .ToListAsync();
+            return View(model);
         }
 
         // GET: UserBooks/Details/5
