@@ -5,9 +5,12 @@ namespace Bookshelf.Models
 {
     public enum BookStatus
     {
-        WantToRead = 0,
-        ReadingRightNow = 1,
-        HaveRead = 2
+        [Display(Name = "Want To Read")]
+        WantToRead,
+        [Display(Name = "Reading Right Now")]
+        ReadingRightNow,
+        [Display(Name = "Have Read")]
+        HaveRead
     }
 
     public class UserBook

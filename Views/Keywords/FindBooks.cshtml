@@ -24,9 +24,18 @@
             {
                 <tr>
                     <td>
+                        @{int count = 0;}
                         @foreach (var i in item.Book.AuthorsBooks)
                         {
-                            <span>@Html.DisplayFor(modelItem => i.Author.FullName)  </span>
+                            count++;
+                            @if (item.Book.AuthorsBooks.Count == count)
+                            {
+                                <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                            }
+                            else 
+                            { 
+                                <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                            }
                         }
                     </td>
                     <td>

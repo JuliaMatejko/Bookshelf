@@ -37,9 +37,18 @@
         {
             <tr>
                 <td>
+                    @{int count = 0;}
                     @foreach (var i in item.AuthorsBooks)
                     {
-                        <span>@Html.DisplayFor(modelItem => i.Author.FullName)  </span>
+                        count++;
+                        @if (item.AuthorsBooks.Count == count)
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                        }
+                        else
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                        }
                     }
                 </td>
                 <td>
@@ -58,9 +67,10 @@
                     </td>
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <td>
-                        <a class="btn btn-outline-dark" asp-controller="UserBooks" asp-action="Create">Add to My Books</a>
-                    </td>
+            <td>
+                <!--<a class="btn btn-outline-dark" asp-controller="UserBooks" asp-action="Create">Add to My Books</a>-->
+                @Html.ActionLink("Add to My Books", "Create", "UserBooks", new { BookID = item.BookID}, new { @class = "btn btn-outline-dark" })
+            </td>
                 }
             </tr>
         }

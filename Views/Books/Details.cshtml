@@ -16,9 +16,18 @@
             Author
         </dt>
         <dd class="col-sm-10">
-            @foreach (var item in Model.AuthorsBooks)
+            @{int count = 0;}
+            @foreach (var i in Model.AuthorsBooks)
             {
-                @Html.DisplayFor(modelItem => item.Author.FullName) <br>
+                count++;
+                @if (Model.AuthorsBooks.Count == count)
+                {
+                    <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                }
+                else
+                {
+                    <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                }
             }
         </dd>
         <dt class="col-sm-2">

@@ -23,12 +23,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.BookStatus)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Review)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -37,9 +31,18 @@
         {
             <tr>
                 <td>
+                    @{int count = 0;}
                     @foreach (var i in item.Book.AuthorsBooks)
                     {
-                        <span>@Html.DisplayFor(modelItem => i.Author.FullName)  </span>
+                        count++;
+                        @if (item.Book.AuthorsBooks.Count == count)
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                        }
+                        else
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                        }
                     }
                 </td>
                 <td>
@@ -49,15 +52,10 @@
                     @Html.DisplayFor(modelItem => item.BookStatus)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Rating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Review)
-                </td>
-                <td>
                     @Html.ActionLink("Details", "Details", new { ApplicationUserID = item.ApplicationUserID, BookID = item.BookID }, new { @class = "btn btn-outline-info" })
                     @Html.ActionLink("Edit", "Edit", new { ApplicationUserID = item.ApplicationUserID, BookID = item.BookID }, new { @class = "btn btn-outline-primary" })
                     @Html.ActionLink("Delete", "Delete", new { ApplicationUserID = item.ApplicationUserID, BookID = item.BookID }, new { @class = "btn btn-outline-danger" })
+                </td>
             </tr>
         }
     </tbody>

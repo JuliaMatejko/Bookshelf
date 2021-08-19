@@ -6,13 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bookshelf.Controllers
 {
     public class UserBooksController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public UserBooksController(ApplicationDbContext context)
         {
             _context = context;
@@ -22,13 +24,13 @@ namespace Bookshelf.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.UsersBooks
-                .Include(u => u.ApplicationUser)
-                .Include(b => b.Book)
-                    .ThenInclude(u => u.AuthorsBooks)
-                        .ThenInclude(a => a.Author)
-                 .AsNoTracking();
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.UsersBooks
+                        .Include(u => u.ApplicationUser)
+                        .Include(b => b.Book)
+                            .ThenInclude(u => u.AuthorsBooks)
+                                .ThenInclude(a => a.Author)
+                         .AsNoTracking()
+                         .ToListAsync());
         }
 
         // GET: UserBooks/Details/5
@@ -54,11 +56,15 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks/Create
         [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(int bookid)
         {
-            ViewData["ApplicationUserID"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "Title");
-            return View();
+            UserBook userBook = new();
+            userBook.BookID = bookid;
+
+            ClaimsPrincipal currentUser = User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            ViewBag.userid = currentUserID;
+            return View(userBook);
         }
 
         // POST: UserBooks/Create
@@ -73,8 +79,6 @@ namespace Bookshelf.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicationUserID"] = new SelectList(_context.ApplicationUsers, "Id", "Id", userBook.ApplicationUserID);
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "Title", userBook.BookID);
             return View(userBook);
         }
 
