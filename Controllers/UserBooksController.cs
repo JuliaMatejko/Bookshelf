@@ -24,8 +24,10 @@ namespace Bookshelf.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var model = await _context.UsersBooks
-                        .Include(u => u.ApplicationUser)
+            ClaimsPrincipal currentUser = User;
+            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var model = await _context.UsersBooks.Where(s => s.ApplicationUserID == currentUserID)
                         .Include(b => b.Book)
                             .ThenInclude(u => u.AuthorsBooks)
                                 .ThenInclude(a => a.Author)
