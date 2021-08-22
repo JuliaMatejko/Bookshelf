@@ -15,29 +15,31 @@
             <input type="hidden" asp-for="ApplicationUserID" />
             <input type="hidden" asp-for="BookID" />
             <div class="form-group">
+                <label asp-for="BookStatus" class="control-label"></label>
+                <select asp-for="BookStatus" class="form-control" asp-items="Html.GetEnumSelectList<BookStatus>()">
+                    <option>Choose book status...</option>
+                </select>
+                <span asp-validation-for="BookStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
                 <input asp-for="Rating" class="form-control" />
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Review" class="control-label"></label>
-                <input asp-for="Review" class="form-control" />
+                @Html.TextAreaFor(model => model.Review, new { @class = "form-control", @rows = "10" })
                 <span asp-validation-for="Review" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BookStatus" class="control-label"></label>
-                <select asp-for="BookStatus" class="form-control"></select>
-                <span asp-validation-for="BookStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

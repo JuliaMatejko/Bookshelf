@@ -63,7 +63,7 @@ namespace Bookshelf.Controllers
                 viewModel.Add(new AssignedAuthorData
                 {
                     AuthorID = author.AuthorID,
-                    FullName = author.FullName, //!
+                    FullName = author.FullName,
                     Assigned = authorsOfBooks.Contains(author.AuthorID)
                 });
             }
@@ -79,7 +79,7 @@ namespace Bookshelf.Controllers
             {
                 viewModel.Add(new AssignedKeywordData
                 {
-                    KeywordID = keyword.KeywordID,//!
+                    KeywordID = keyword.KeywordID,
                     Assigned = bookKeywords.Contains(keyword.KeywordID)
                 });
             }
@@ -177,7 +177,7 @@ namespace Bookshelf.Controllers
                                     .ThenInclude(e => e.Keyword)
                                .FirstOrDefaultAsync(s => s.BookID == id);
 
-            if (await TryUpdateModelAsync<Book>(
+            if (await TryUpdateModelAsync(
                 bookToUpdate,
                 "",
                 i => i.Title, i => i.AddedOn, i => i.Description))

@@ -38,17 +38,20 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks/Details/5
         [Authorize]
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int? bookId, string userId)
         {
-            if (id == null)
+            if (bookId == null)
             {
                 return NotFound();
             }
 
-            var userBook = await _context.UsersBooks
-                .Include(u => u.ApplicationUser)
-                .Include(u => u.Book)
-                .FirstOrDefaultAsync(m => m.ApplicationUserID == id);
+            var userBook = await _context.UsersBooks.Where(s => s.ApplicationUserID == userId)
+                        .Include(b => b.Book)
+                            .ThenInclude(u => u.AuthorsBooks)
+                                .ThenInclude(a => a.Author)
+                         .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.BookID == bookId);
+
             if (userBook == null)
             {
                 return NotFound();
@@ -87,20 +90,18 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks/Edit/5
         [Authorize]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? bookId, string userId)
         {
-            if (id == null)
+            if (bookId == null)
             {
                 return NotFound();
             }
 
-            var userBook = await _context.UsersBooks.FindAsync(id);
+            var userBook = await _context.UsersBooks.FindAsync(userId, bookId);
             if (userBook == null)
             {
                 return NotFound();
             }
-            ViewData["ApplicationUserID"] = new SelectList(_context.ApplicationUsers, "Id", "Id", userBook.ApplicationUserID);
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "Title", userBook.BookID);
             return View(userBook);
         }
 
@@ -108,13 +109,8 @@ namespace Bookshelf.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("ApplicationUserID,BookID,Rating,Review,BookStatus")] UserBook userBook)
+        public async Task<IActionResult> Edit([Bind("ApplicationUserID,BookID,Rating,Review,BookStatus")] UserBook userBook)
         {
-            if (id != userBook.ApplicationUserID)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -133,31 +129,31 @@ namespace Bookshelf.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { bookId = userBook.BookID, userId = userBook.ApplicationUserID });
             }
-            ViewData["ApplicationUserID"] = new SelectList(_context.ApplicationUsers, "Id", "Id", userBook.ApplicationUserID);
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "Title", userBook.BookID);
             return View(userBook);
         }
 
         // GET: UserBooks/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string userId, int? bookId)
         {
-            if (id == null)
+            if (bookId == null || userId == null)
             {
                 return NotFound();
             }
 
-            var userBook = await _context.UsersBooks
-                .Include(u => u.ApplicationUser)
-                .Include(u => u.Book)
-                .FirstOrDefaultAsync(m => m.ApplicationUserID == id);
+            var userBook = await _context.UsersBooks.Where(s => s.ApplicationUserID == userId)
+                        .Include(b => b.Book)
+                            .ThenInclude(u => u.AuthorsBooks)
+                                .ThenInclude(a => a.Author)
+                         .AsNoTracking()
+                         .FirstOrDefaultAsync(m => m.BookID == bookId);
+
             if (userBook == null)
             {
                 return NotFound();
             }
-
             return View(userBook);
         }
 
@@ -165,9 +161,9 @@ namespace Bookshelf.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string userId, int bookId)
         {
-            var userBook = await _context.UsersBooks.FindAsync(id);
+            var userBook = await _context.UsersBooks.FindAsync(userId, bookId);
             _context.UsersBooks.Remove(userBook);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

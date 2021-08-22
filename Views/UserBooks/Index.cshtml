@@ -13,48 +13,57 @@
     <thead>
         <tr>
             <th>
-               Author
+                Author
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Book)
             </th>
-            <th>
+            <th></th>
+            <th class="text-center">
                 @Html.DisplayNameFor(model => model.BookStatus)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @{int count = 0;}
-                    @foreach (var i in item.Book.AuthorsBooks)
+        <tr>
+            <td>
+                @{int count = 0;}
+                @foreach (var i in item.Book.AuthorsBooks)
+                {
+                    count++;
+                    @if (item.Book.AuthorsBooks.Count == count)
                     {
-                        count++;
-                        @if (item.Book.AuthorsBooks.Count == count)
-                        {
-                            <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
-                        }
-                        else
-                        {
-                            <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
-                        }
+                        <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Book.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BookStatus)
-                </td>
-                <td>
-                    @Html.ActionLink("Details", "Details", new { ApplicationUserID = item.ApplicationUserID, BookID = item.BookID }, new { @class = "btn btn-outline-info" })
-                    @Html.ActionLink("Edit", "Edit", new { ApplicationUserID = item.ApplicationUserID, BookID = item.BookID }, new { @class = "btn btn-outline-primary" })
-                    @Html.ActionLink("Delete", "Delete", new { ApplicationUserID = item.ApplicationUserID, BookID = item.BookID }, new { @class = "btn btn-outline-danger" })
-                </td>
-            </tr>
+                    else
+                    {
+                        <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                    }
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Book.Title)
+            </td>
+            <td>
+                <a class="btn btn-outline-info" asp-action="Details" asp-route-bookId="@item.BookID" asp-route-userId="@item.ApplicationUserID">Details</a>
+            </td>
+            <td class="text-center">
+                @switch (item.BookStatus)
+                {
+                    case BookStatus.WantToRead:
+                        <span class="badge badge-pill badge-primary book-status"> @Html.DisplayFor(modelItem => item.BookStatus) </span>
+                        break;
+                    case BookStatus.ReadingRightNow:
+                        <span class="badge badge-pill badge-info book-status"> @Html.DisplayFor(modelItem => item.BookStatus) </span>
+                        break;
+                    case BookStatus.HaveRead:
+                        <span class="badge badge-pill badge-success book-status"> @Html.DisplayFor(modelItem => item.BookStatus) </span>
+                        break;
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>
