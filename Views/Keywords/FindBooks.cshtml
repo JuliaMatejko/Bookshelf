@@ -7,48 +7,55 @@
 <h1>Find Books with keyword <span class="font-weight-bold">@Html.DisplayFor(model => model.KeywordID)</span></h1>
 <br />
 <div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Author
-                </th>
-                <th>
-                    Title
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.BookKeyword)
-            {
+    @if(Model.BookKeyword.Any())
+    { 
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @{int count = 0;}
-                        @foreach (var i in item.Book.AuthorsBooks)
-                        {
-                            count++;
-                            @if (item.Book.AuthorsBooks.Count == count)
-                            {
-                                <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
-                            }
-                            else 
-                            { 
-                                <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
-                            }
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Book.Title)
-                    </td>
-                    <td>
-                        <a class="btn btn-outline-info" asp-controller="Books" asp-action="Details" asp-route-id="@item.Book.BookID">Details <i class="fas fa-angle-double-right"></i></a>
-                    </td>
+                    <th>
+                        Author
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.BookKeyword)
+                {
+                    <tr>
+                        <td>
+                            @{int count = 0;}
+                            @foreach (var i in item.Book.AuthorsBooks)
+                            {
+                                count++;
+                                @if (item.Book.AuthorsBooks.Count == count)
+                                {
+                                    <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                                }
+                                else
+                                {
+                                    <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Book.Title)
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-info" asp-controller="Books" asp-action="Details" asp-route-id="@item.Book.BookID">Details <i class="fas fa-angle-double-right"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="alert alert-secondary">Not found any books with this keyword</p>
+    }
 </div>
 <div>
-    <a class="btn btn-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
+    <a class="btn btn-outline-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to Keyword list</a>
 </div>

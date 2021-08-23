@@ -16,7 +16,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.KeywordID)</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SortParm"]">@Html.DisplayNameFor(model => model.KeywordID) <i class="fas fa-sort"></i></a>
+            </th>
             <th></th>
             @if (SignInManager.IsSignedIn(User))
             {

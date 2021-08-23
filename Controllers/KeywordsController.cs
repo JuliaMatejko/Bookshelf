@@ -42,9 +42,20 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Keywords
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Kewords.ToListAsync());
+            ViewData["SortParm"] = string.IsNullOrEmpty(sortOrder) ? "desc" : "";
+            var keywords = from k in _context.Kewords
+                          select k;
+            if (sortOrder == "desc")
+            {
+                keywords = keywords.OrderByDescending(a => a.KeywordID);
+            }
+            else
+            {
+                keywords = keywords.OrderBy(a => a.KeywordID);
+            }
+            return View(await keywords.AsNoTracking().ToListAsync());
         }
 
         // GET: Keywords/Create

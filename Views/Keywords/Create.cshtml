@@ -1,10 +1,10 @@
 ﻿@model Bookshelf.Models.Keyword
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Keyword";
 }
 
-<h1>Create</h1>
+<h1>Create a new keyword</h1>
 <br />
 <hr />
 <div class="row">
@@ -16,7 +16,9 @@
                 <input asp-for="KeywordID" class="form-control" />
                 <span asp-validation-for="KeywordID" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
+                <a class="btn btn-outline-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to Keyword list</a>
                 <input type="submit" value="Create" class="btn btn-success" />
             </div>
         </form>
@@ -24,7 +26,7 @@
 </div>
 
 <div>
-    <a class="btn btn-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
+    
 </div>
 
 @section Scripts {

@@ -17,18 +17,14 @@
     <thead>
         <tr>
             <th>
-                Author
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LastNameSortParm"]">Author <i class="fas fa-sort"></i></a>
             </th>
             <th></th>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <th></th>
-            }
             </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FullName)
@@ -36,14 +32,7 @@
             <td>
                 <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.AuthorID">Details <i class="fas fa-angle-double-right"></i></a>
             </td>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <td>
-                    <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.AuthorID">Edit <i class="far fa-edit"></i></a>
-                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.AuthorID">Delete <i class="far fa-trash-alt"></i></a>
-                </td>
-            }
-            </tr>
-        }
+        </tr>
+    }
     </tbody>
 </table>

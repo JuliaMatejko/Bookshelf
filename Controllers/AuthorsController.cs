@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace Bookshelf.Controllers
 {
@@ -18,9 +19,20 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Authors.ToListAsync());
+            ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
+            var authors = from a in _context.Authors
+                           select a;
+            if (sortOrder == "lastname_desc")
+            {
+                authors = authors.OrderByDescending(a => a.LastName);
+            }
+            else 
+            {
+                authors = authors.OrderBy(a => a.LastName);
+            }
+            return View(await authors.AsNoTracking().ToListAsync());
         }
 
         // GET: Authors/Details/5
@@ -112,7 +124,7 @@ namespace Bookshelf.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = author.AuthorID });
             }
             return View(author);
         }

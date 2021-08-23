@@ -20,13 +20,31 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Books
+            ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
+            ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
+            var books = from s in _context.Books
                         .Include(b => b.AuthorsBooks)
                             .ThenInclude(e => e.Author)
-                        .AsNoTracking()
-                        .ToListAsync());
+                        select s;
+
+            switch (sortOrder)
+            {
+                case "lastname_desc":
+                    books = books.OrderByDescending(a => a.AuthorsBooks.Select(s => s.Author.LastName).FirstOrDefault());
+                    break;
+                case "Title":
+                    books = books.OrderBy(s => s.Title);
+                    break;
+                case "title_desc":
+                    books = books.OrderByDescending(s => s.Title);
+                    break;
+                default:
+                    books = books.OrderBy(a => a.AuthorsBooks.Select(s => s.Author.LastName).FirstOrDefault());
+                    break;
+            }
+            return View(await books.AsNoTracking().ToListAsync());
         }
 
         // GET: Books/Details/5
@@ -195,7 +213,7 @@ namespace Bookshelf.Controllers
                         "Try again, and if the problem persists, " +
                         "see your system administrator.");
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = bookToUpdate.BookID });
             }
             UpdateBookAuthors(selectedAuthors, bookToUpdate);
             UpdateBookKeywords(selectedKeywords, bookToUpdate);

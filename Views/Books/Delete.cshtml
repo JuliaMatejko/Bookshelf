@@ -1,7 +1,7 @@
 ﻿@model Bookshelf.Models.Book
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Book";
 }
 
 <h1>Delete</h1>
@@ -41,10 +41,11 @@
             @Html.DisplayFor(model => model.AddedOn)
         </dd>
     </dl>
+    <br />
     <p class="alert alert-danger">Are you sure you want to delete this book?</p>
     <form asp-action="Delete">
         <input type="hidden" asp-for="BookID" />
-        <a class="btn btn-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
+        <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.BookID"><i class="fas fa-angle-left"></i> Back to List</a>
         <input type="submit" value="Delete" class="btn btn-danger" />
     </form>
 </div>

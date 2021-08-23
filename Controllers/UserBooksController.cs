@@ -22,18 +22,35 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
             ClaimsPrincipal currentUser = User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var model = await _context.UsersBooks.Where(s => s.ApplicationUserID == currentUserID)
+            ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
+            ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
+            var userbooks = from ub in _context.UsersBooks
+                        .Where(s => s.ApplicationUserID == currentUserID)
                         .Include(b => b.Book)
                             .ThenInclude(u => u.AuthorsBooks)
                                 .ThenInclude(a => a.Author)
-                         .AsNoTracking()
-                         .ToListAsync();
-            return View(model);
+                        select ub;
+            switch (sortOrder)
+            {
+                case "lastname_desc":
+                    userbooks = userbooks.OrderByDescending(b => b.Book.AuthorsBooks.Select(s => s.Author.LastName).FirstOrDefault());
+                    break;
+                case "Title":
+                    userbooks = userbooks.OrderBy(s => s.Book.Title);
+                    break;
+                case "title_desc":
+                    userbooks = userbooks.OrderByDescending(s => s.Book.Title);
+                    break;
+                default:
+                    userbooks = userbooks.OrderBy(b => b.Book.AuthorsBooks.Select(s => s.Author.LastName).FirstOrDefault());
+                    break;
+            }
+            return View(await userbooks.AsNoTracking().ToListAsync());
         }
 
         // GET: UserBooks/Details/5
@@ -64,19 +81,27 @@ namespace Bookshelf.Controllers
         [Authorize]
         public async Task<IActionResult> Create(int bookid)
         {
-            UserBook userBook = new();
-            userBook.BookID = bookid;
 
             ClaimsPrincipal currentUser = User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+            var userbookOrNull = await _context.UsersBooks.FindAsync(currentUserID, bookid);
+
             var book = await _context.Books.Where(b => b.BookID == bookid)
-                        .Include(s => s.AuthorsBooks)
-                        .ThenInclude(a => a.Author)
-                        .FirstOrDefaultAsync();
+                       .Include(s => s.AuthorsBooks)
+                       .ThenInclude(a => a.Author)
+                       .AsNoTracking()
+                       .FirstOrDefaultAsync();
 
             ViewBag.userId = currentUserID;
             ViewBag.book = book;
+
+            if (userbookOrNull != null)
+            {
+                return View();
+            }
+            UserBook userBook = new();
+            userBook.BookID = bookid;
             return View(userBook);
         }
 
@@ -103,8 +128,12 @@ namespace Bookshelf.Controllers
             {
                 return NotFound();
             }
-
-            var userBook = await _context.UsersBooks.FindAsync(userId, bookId);
+            var userBook = await _context.UsersBooks.Where(s => s.ApplicationUserID == userId)
+                        .Include(b => b.Book)
+                            .ThenInclude(u => u.AuthorsBooks)
+                                .ThenInclude(a => a.Author)
+                         .AsNoTracking()
+                         .FirstOrDefaultAsync(s => s.BookID == bookId);
             if (userBook == null)
             {
                 return NotFound();

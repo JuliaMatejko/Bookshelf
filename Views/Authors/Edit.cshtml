@@ -1,7 +1,7 @@
 ﻿@model Bookshelf.Models.Author
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Author";
 }
 
 <h1>Edit</h1>
@@ -28,15 +28,13 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
+                <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.AuthorID"><i class="fas fa-angle-left"></i> Back to Details</a>
                 <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a class="btn btn-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
 </div>
 
 @section Scripts {

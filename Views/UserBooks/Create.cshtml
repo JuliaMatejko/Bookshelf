@@ -2,10 +2,10 @@
 
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Book to My Books";
 }
 
-<h1>Add Book</h1>
+<h1>Add Book to My Books</h1>
 <br />
 <h4>
     @{int count = 0;}
@@ -26,39 +26,48 @@
     @ViewBag.book.Title
 </h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" value="@ViewBag.userId" asp-for="ApplicationUserID" class="form-control" />
-            <input type="hidden" value="@Model.BookID" asp-for="BookID" class="form-control"/>
-            <div class="form-group">
-                <label asp-for="BookStatus" class="control-label"></label>
-                <select asp-for="BookStatus" class="form-control" asp-items="Html.GetEnumSelectList<BookStatus>()">
-                    <option>Choose book status...</option>
-                </select>
-                <span asp-validation-for="BookStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Review" class="control-label"></label>
-                @Html.TextAreaFor(model => model.Review, new { @class = "form-control", @rows = "10" })
-                <span asp-validation-for="Review" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success" />
-            </div>
-        </form>
+@if (Model == null)
+{
+    <br />
+    <p class="alert alert-info">This book is already in My Books</p>
+    <a class="btn btn-outline-secondary" asp-controller="Books" asp-action="Details" asp-route-id="@ViewBag.book.BookID"><i class="fas fa-angle-left"></i> Back to Book Details</a>
+    <a class="btn btn-outline-info" asp-controller="UserBooks" asp-action="Details" asp-route-bookId="@ViewBag.book.BookID" asp-route-userId="@ViewBag.userId">Show this book in My Books <i class="fas fa-angle-double-right"></i></a>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" value="@ViewBag.userId" asp-for="ApplicationUserID" class="form-control" />
+                <input type="hidden" value="@Model.BookID" asp-for="BookID" class="form-control" />
+                <div class="form-group">
+                    <label asp-for="BookStatus" class="control-label"></label>
+                    <select asp-for="BookStatus" class="form-control" asp-items="Html.GetEnumSelectList<BookStatus>()">
+                        <option>Choose book status...</option>
+                    </select>
+                    <span asp-validation-for="BookStatus" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Rating" class="control-label"></label>
+                    <input asp-for="Rating" class="form-control" />
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Review" class="control-label"></label>
+                    @Html.TextAreaFor(model => model.Review, new { @class = "form-control", @rows = "10" })
+                    <span asp-validation-for="Review" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <a class="btn btn-outline-secondary" asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookID"><i class="fas fa-angle-left"></i> Back to Details</a>
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+}
 
-<div>
-    <a class="btn btn-secondary" asp-controller="Books" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
