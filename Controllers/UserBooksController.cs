@@ -62,14 +62,21 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks/Create
         [Authorize]
-        public IActionResult Create(int bookid)
+        public async Task<IActionResult> Create(int bookid)
         {
             UserBook userBook = new();
             userBook.BookID = bookid;
 
             ClaimsPrincipal currentUser = User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            ViewBag.userid = currentUserID;
+
+            var book = await _context.Books.Where(b => b.BookID == bookid)
+                        .Include(s => s.AuthorsBooks)
+                        .ThenInclude(a => a.Author)
+                        .FirstOrDefaultAsync();
+
+            ViewBag.userId = currentUserID;
+            ViewBag.book = book;
             return View(userBook);
         }
 

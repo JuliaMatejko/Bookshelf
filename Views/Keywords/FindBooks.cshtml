@@ -42,7 +42,7 @@
                         @Html.DisplayFor(modelItem => item.Book.Title)
                     </td>
                     <td>
-                        <a class="btn btn-outline-info" asp-controller="Books" asp-action="Details" asp-route-id="@item.Book.BookID">Details</a>
+                        <a class="btn btn-outline-info" asp-controller="Books" asp-action="Details" asp-route-id="@item.Book.BookID">Details <i class="fas fa-angle-double-right"></i></a>
                     </td>
                 </tr>
             }
@@ -50,5 +50,5 @@
     </table>
 </div>
 <div>
-    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
 </div>

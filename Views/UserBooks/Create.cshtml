@@ -7,13 +7,30 @@
 
 <h1>Add Book</h1>
 <br />
-<h4> Selected book title</h4>
+<h4>
+    @{int count = 0;}
+    @foreach (var authorbook in ViewBag.book.AuthorsBooks)
+    {
+        count++;
+        @if (Enumerable.Count(ViewBag.book.AuthorsBooks) == count)
+        {
+            <span>@authorbook.Author.FullName</span>
+        }
+        else
+        {
+            <span>@authorbook.Author.FullName, </span>
+        }
+    }
+</h4>
+<h4 class="font-italic">
+    @ViewBag.book.Title
+</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" value="@ViewBag.userid" asp-for="ApplicationUserID" class="form-control" />
+            <input type="hidden" value="@ViewBag.userId" asp-for="ApplicationUserID" class="form-control" />
             <input type="hidden" value="@Model.BookID" asp-for="BookID" class="form-control"/>
             <div class="form-group">
                 <label asp-for="BookStatus" class="control-label"></label>
@@ -40,7 +57,7 @@
 </div>
 
 <div>
-    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-controller="Books" asp-action="Index"><i class="fas fa-angle-left"></i> Back to List</a>
 </div>
 
 @section Scripts {

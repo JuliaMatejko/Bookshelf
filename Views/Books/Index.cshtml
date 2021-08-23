@@ -10,7 +10,7 @@
 <p>
     @if (SignInManager.IsSignedIn(User))
     {
-        <a class="btn btn-outline-success" asp-action="Create">Add A New Book +</a>
+        <a class="btn btn-outline-success" asp-action="Create">Add a new book <i class="fas fa-plus"></i></a>
     }
 </p>
 <table class="table">
@@ -21,9 +21,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AddedOn)
             </th>
             <th></th>
             @if (SignInManager.IsSignedIn(User))
@@ -55,23 +52,19 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AddedOn)
-                </td>
-                <td>
-                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.BookID">Details</a>
+                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.BookID">Details <i class="fas fa-angle-double-right"></i></a>
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.BookID">Edit</a>
-                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.BookID">Delete</a>
+                        <a class="btn btn-outline-dark" asp-controller="UserBooks" asp-action="Create" asp-route-BookID="@item.BookID">Add to My Books <i class="fas fa-book-reader"></i></a>
                     }
-                    </td>
-                @if (SignInManager.IsSignedIn(User))
-                {
-            <td>
-                <!--<a class="btn btn-outline-dark" asp-controller="UserBooks" asp-action="Create">Add to My Books</a>-->
-                @Html.ActionLink("Add to My Books", "Create", "UserBooks", new { BookID = item.BookID}, new { @class = "btn btn-outline-dark" })
-            </td>
-                }
+                </td>
+                <td>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.BookID">Edit <i class="far fa-edit"></i></a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.BookID">Delete <i class="far fa-trash-alt"></i></a>
+                    }
+                </td>
             </tr>
         }
     </tbody>

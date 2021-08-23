@@ -10,7 +10,7 @@
 <p>
     @if (SignInManager.IsSignedIn(User))
     {
-        <a class="btn btn-outline-success" asp-action="Create">Add A New Keyword +</a>
+        <a class="btn btn-outline-success" asp-action="Create">Add a new keyword <i class="fas fa-plus"></i></a>
     }
     </p>
 <table class="table">
@@ -18,6 +18,10 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.KeywordID)</th>
             <th></th>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <th></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -28,12 +32,15 @@
                     @Html.DisplayFor(modelItem => item.KeywordID)
                 </td>
                 <td>
-                    <a class="btn btn-outline-primary" asp-action="FindBooks" asp-route-id="@item.KeywordID">Find books >></a>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.KeywordID">Delete</a>
-                    }
+                    <a class="btn btn-outline-primary" asp-action="FindBooks" asp-route-id="@item.KeywordID">Find books <i class="fas fa-search"></i></a>
                 </td>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <td>
+
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.KeywordID">Delete <i class="far fa-trash-alt"></i></a>
+                    </td>
+                }
             </tr>
         }
     </tbody>

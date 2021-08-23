@@ -16,7 +16,7 @@
                 Author
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Book)
+                @Html.DisplayNameFor(model => model.Book.Title)
             </th>
             <th></th>
             <th class="text-center">
@@ -47,19 +47,19 @@
                 @Html.DisplayFor(modelItem => item.Book.Title)
             </td>
             <td>
-                <a class="btn btn-outline-info" asp-action="Details" asp-route-bookId="@item.BookID" asp-route-userId="@item.ApplicationUserID">Details</a>
+                <a class="btn btn-outline-info" asp-action="Details" asp-route-bookId="@item.BookID" asp-route-userId="@item.ApplicationUserID">Details <i class="fas fa-angle-double-right"></i></a>
             </td>
             <td class="text-center">
                 @switch (item.BookStatus)
                 {
                     case BookStatus.WantToRead:
-                        <span class="badge badge-pill badge-primary book-status"> @Html.DisplayFor(modelItem => item.BookStatus) </span>
+                        <span class="badge badge-pill badge-primary book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="far fa-bookmark"></i></span>
                         break;
                     case BookStatus.ReadingRightNow:
-                        <span class="badge badge-pill badge-info book-status"> @Html.DisplayFor(modelItem => item.BookStatus) </span>
+                        <span class="badge badge-pill badge-info book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="fas fa-book-open"></i></span>
                         break;
                     case BookStatus.HaveRead:
-                        <span class="badge badge-pill badge-success book-status"> @Html.DisplayFor(modelItem => item.BookStatus) </span>
+                        <span class="badge badge-pill badge-success book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="fas fa-book"></i></span>
                         break;
                 }
             </td>
