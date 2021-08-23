@@ -43,6 +43,7 @@ namespace Bookshelf.Data
                 new Author{FirstName = "Dmitry", LastName = "Glukhovsky"},
                 new Author{FirstName = "Liu", LastName = "Cixin"},
                 new Author{FirstName = "Arthur", SecondName="Conan", LastName = "Doyle"},
+                new Author{FirstName = "Howard", SecondName="Phillips", LastName = "Lovecraft"},
                 new Author{FirstName = "Frank", LastName = "Herbert"}
             };
             foreach (Author a in authors)
@@ -66,58 +67,6 @@ namespace Bookshelf.Data
             foreach (Book b in books)
             {
                 context.Books.Add(b);
-            }
-            context.SaveChanges();
-
-            var authorsbooks = new AuthorBook[]
-            {
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Lem").AuthorID, 
-                    BookID = books.Single(b => b.Title == "Solaris").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Glukhovsky").AuthorID,
-                    BookID = books.Single(b => b.Title == "Metro 2033").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Glukhovsky").AuthorID,
-                    BookID = books.Single(b => b.Title == "FUTU.RE").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Cixin").AuthorID,
-                    BookID = books.Single(b => b.Title == "The Three-Body Problem").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Cixin").AuthorID,
-                    BookID = books.Single(b => b.Title == "The Dark Forest").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Cixin").AuthorID,
-                    BookID = books.Single(b => b.Title == "Death's End").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Doyle").AuthorID,
-                    BookID = books.Single(b => b.Title == "A Study in Scarlet").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Lovecraft").AuthorID,
-                    BookID = books.Single(b => b.Title == "The Call of Cthulhu").BookID
-                },
-                new AuthorBook{
-                    AuthorID = authors.Single(a => a.LastName == "Herbert").AuthorID,
-                    BookID = books.Single(b => b.Title == "Dune").BookID
-                },
-            };
-            foreach (AuthorBook ab in authorsbooks)
-            {
-                var authorbooktInDataBase = context.AuthorsBooks.Where(
-                   s =>
-                            s.Author.AuthorID == ab.AuthorID &&
-                            s.Book.BookID == ab.BookID).SingleOrDefault();
-                if (authorbooktInDataBase == null)
-                {
-                    context.AuthorsBooks.Add(ab);
-                }
             }
             context.SaveChanges();
 
@@ -228,6 +177,60 @@ namespace Bookshelf.Data
                 }
             }
             context.SaveChanges();
+
+            var authorsbooks = new AuthorBook[]
+            {
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Lem").AuthorID, 
+                    BookID = books.Single(b => b.Title == "Solaris").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Glukhovsky").AuthorID,
+                    BookID = books.Single(b => b.Title == "Metro 2033").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Glukhovsky").AuthorID,
+                    BookID = books.Single(b => b.Title == "FUTU.RE").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Cixin").AuthorID,
+                    BookID = books.Single(b => b.Title == "The Three-Body Problem").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Cixin").AuthorID,
+                    BookID = books.Single(b => b.Title == "The Dark Forest").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Cixin").AuthorID,
+                    BookID = books.Single(b => b.Title == "Death's End").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Doyle").AuthorID,
+                    BookID = books.Single(b => b.Title == "A Study in Scarlet").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Lovecraft").AuthorID,
+                    BookID = books.Single(b => b.Title == "The Call of Cthulhu").BookID
+                },
+                new AuthorBook{
+                    AuthorID = authors.Single(a => a.LastName == "Herbert").AuthorID,
+                    BookID = books.Single(b => b.Title == "Dune").BookID
+                },
+            };
+            foreach (AuthorBook ab in authorsbooks)
+            {
+                var authorbooktInDataBase = context.AuthorsBooks.Where(
+                   s =>
+                            s.Author.AuthorID == ab.AuthorID &&
+                            s.Book.BookID == ab.BookID).SingleOrDefault();
+                if (authorbooktInDataBase == null)
+                {
+                    context.AuthorsBooks.Add(ab);
+                }
+            }
+            context.SaveChanges();
+
+            
         }
     }
 }
