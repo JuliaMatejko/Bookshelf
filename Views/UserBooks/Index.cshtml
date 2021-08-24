@@ -8,7 +8,15 @@
 
 <h1>My Books (@User.Identity.Name)</h1>
 <br />
-
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color d-flex justify-content-between m-2 flex-wrap">
+        <div>
+            <input class="form-control w-auto d-inline-block" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-outline-primary mb-1" />
+            <a class="btn btn-outline-secondary mb-1" asp-action="Index">Full list</a>
+        </div>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -27,43 +35,43 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @{int count = 0;}
-                @foreach (var i in item.Book.AuthorsBooks)
-                {
-                    count++;
-                    @if (item.Book.AuthorsBooks.Count == count)
+            <tr>
+                <td>
+                    @{int count = 0;}
+                    @foreach (var i in item.Book.AuthorsBooks)
                     {
-                        <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                        count++;
+                        @if (item.Book.AuthorsBooks.Count == count)
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName)</span>
+                        }
+                        else
+                        {
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                        }
                     }
-                    else
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Title)
+                </td>
+                <td>
+                    <a class="btn btn-outline-info" asp-action="Details" asp-route-bookId="@item.BookID" asp-route-userId="@item.ApplicationUserID">Details <i class="fas fa-angle-double-right"></i></a>
+                </td>
+                <td class="text-center">
+                    @switch (item.BookStatus)
                     {
-                        <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                        case BookStatus.WantToRead:
+                            <span class="badge badge-pill badge-primary book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="far fa-bookmark"></i></span>
+                            break;
+                        case BookStatus.ReadingRightNow:
+                            <span class="badge badge-pill badge-info book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="fas fa-book-open"></i></span>
+                            break;
+                        case BookStatus.HaveRead:
+                            <span class="badge badge-pill badge-success book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="fas fa-book"></i></span>
+                            break;
                     }
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Book.Title)
-            </td>
-            <td>
-                <a class="btn btn-outline-info" asp-action="Details" asp-route-bookId="@item.BookID" asp-route-userId="@item.ApplicationUserID">Details <i class="fas fa-angle-double-right"></i></a>
-            </td>
-            <td class="text-center">
-                @switch (item.BookStatus)
-                {
-                    case BookStatus.WantToRead:
-                        <span class="badge badge-pill badge-primary book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="far fa-bookmark"></i></span>
-                        break;
-                    case BookStatus.ReadingRightNow:
-                        <span class="badge badge-pill badge-info book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="fas fa-book-open"></i></span>
-                        break;
-                    case BookStatus.HaveRead:
-                        <span class="badge badge-pill badge-success book-status"> @Html.DisplayFor(modelItem => item.BookStatus) <i class="fas fa-book"></i></span>
-                        break;
-                }
-            </td>
-        </tr>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

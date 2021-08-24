@@ -20,15 +20,20 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
             ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
+            ViewData["CurrentFilter"] = searchString;
+
             var books = from s in _context.Books
                         .Include(b => b.AuthorsBooks)
                             .ThenInclude(e => e.Author)
                         select s;
-
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(a => a.Title.Contains(searchString));
+            }
             switch (sortOrder)
             {
                 case "lastname_desc":

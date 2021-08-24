@@ -42,11 +42,17 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Keywords
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["SortParm"] = string.IsNullOrEmpty(sortOrder) ? "desc" : "";
+            ViewData["CurrentFilter"] = searchString;
+
             var keywords = from k in _context.Kewords
                           select k;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                keywords = keywords.Where(a => a.KeywordID.Contains(searchString));
+            }
             if (sortOrder == "desc")
             {
                 keywords = keywords.OrderByDescending(a => a.KeywordID);

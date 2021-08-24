@@ -7,12 +7,21 @@
 
 <h1>Keywords</h1>
 <br />
-<p>
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <a class="btn btn-outline-success" asp-action="Create">Add a new keyword <i class="fas fa-plus"></i></a>
-    }
-    </p>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color d-flex justify-content-between m-2 flex-wrap">
+        <div>
+            <input class="form-control w-auto d-inline-block" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-outline-primary mb-1" />
+            <a class="btn btn-outline-secondary mb-1" asp-action="Index">Full list</a>
+        </div>
+        <div>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <a class="btn btn-outline-success" asp-action="Create">Add a new keyword <i class="fas fa-plus"></i></a>
+            }
+        </div>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>

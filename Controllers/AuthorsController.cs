@@ -19,11 +19,19 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
+            ViewData["CurrentFilter"] = searchString;
+
             var authors = from a in _context.Authors
                            select a;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                authors = authors.Where(a => a.FirstName.Contains(searchString)
+                                        || a.SecondName.Contains(searchString)
+                                       || a.LastName.Contains(searchString));
+            }
             if (sortOrder == "lastname_desc")
             {
                 authors = authors.OrderByDescending(a => a.LastName);

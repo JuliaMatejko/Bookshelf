@@ -22,19 +22,25 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks
         [Authorize]
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ClaimsPrincipal currentUser = User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
             ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
+            ViewData["CurrentFilter"] = searchString;
+
             var userbooks = from ub in _context.UsersBooks
                         .Where(s => s.ApplicationUserID == currentUserID)
                         .Include(b => b.Book)
                             .ThenInclude(u => u.AuthorsBooks)
                                 .ThenInclude(a => a.Author)
                         select ub;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                userbooks = userbooks.Where(a => a.Book.Title.Contains(searchString));
+            }
             switch (sortOrder)
             {
                 case "lastname_desc":
