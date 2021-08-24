@@ -19,10 +19,24 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
             ViewData["CurrentFilter"] = searchString;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
             var authors = from a in _context.Authors
                            select a;
@@ -40,7 +54,8 @@ namespace Bookshelf.Controllers
             {
                 authors = authors.OrderBy(a => a.LastName);
             }
-            return View(await authors.AsNoTracking().ToListAsync());
+            int pageSize = 5;
+            return View(await PaginatedList<Author>.CreateAsync(authors.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Authors/Details/5
