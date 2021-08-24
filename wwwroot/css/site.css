@@ -59,8 +59,10 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background-color: beige;
+    font-family: 'Roboto', sans-serif;
 }
 .footer {
   position: absolute;
@@ -79,4 +81,36 @@ body {
 
 .table td, .table th {
     vertical-align: middle;
+}
+
+.home-background {
+    background-image: url('../static/background.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 700px;
+}
+
+a {
+    color:brown;
+}
+
+a:hover {
+    color:darkcyan;
+}
+
+.table thead th {
+    border-bottom: 2px solid #cb742a6b;
+}
+
+.table td, .table th {
+    border-top: 1px solid #cb742a6b;
+}
+
+.table {
+    background-color: #d6a57b1f;
+}
+
+hr {
+    background-color: #cb742a6b;
 }

@@ -1,19 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<div class="jumbotron jumbotron-fluid text-center m-0" style="padding: 2rem 1rem; background-color: #cec09e;">
+    <div class="container">
+        <h1 class="display-4" style="font-family: 'Pacifico', cursive; color: black;">Bookshelf <img src="~/static/logo.png" height="60" alt="logo"/></h1>
+        <p class="lead" style="font-family: 'Roboto', sans-serif; ">
+            All your books, reviews and ratings, listed in a one place and easy to manage.
+        </p>
+        <a class="btn btn-info btn-lg" asp-controller="Books" asp-action="Index">Check out book database <i class="fas fa-angle-double-right"></i></a>
+        <div class="p-2">
+            <a asp-area="Identity" asp-page="/Account/Login">
+                Log in
+            </a> or
+            <a asp-area="Identity" asp-page="/Account/Register">
+                Register
+            </a>
 
-<div class="text-center">
-    <h1 class="display-4">Bookshelf</h1>
-    <p>All books listed in a one place and easy to manage.
-        <a asp-controller="Books" asp-action="Index"><br /> 
-        Check book database >>
-        </a><br /> 
-        <a asp-area="Identity" asp-page="/Account/Login">
-            Log in
-        </a> or 
-        <a asp-area="Identity" asp-page="/Account/Register">
-            Register
-        </a> 
-    </p>
-    <div style="background-color: #ce9e9e"><img src="~/static/background.jpg" alt="background picture" height="600" /></div>
+            to add, rate and review books
+        </div>
+    </div>
+
 </div>
+<div class="container-fluid home-background"></div>
