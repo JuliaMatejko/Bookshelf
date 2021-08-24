@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bookshelf.Models.Keyword>
+﻿@model PaginatedList<Bookshelf.Models.Keyword>
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @{
@@ -26,7 +26,7 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["SortParm"]">@Html.DisplayNameFor(model => model.KeywordID) <i class="fas fa-sort"></i></a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Keyword <i class="fas fa-sort"></i></a>
             </th>
             <th></th>
             @if (SignInManager.IsSignedIn(User))
@@ -56,3 +56,23 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-info @prevDisabled">
+    <i class="fas fa-angle-left"></i> Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-info @nextDisabled">
+    Next <i class="fas fa-angle-right"></i>
+</a>

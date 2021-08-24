@@ -42,10 +42,24 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Keywords
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["SortParm"] = string.IsNullOrEmpty(sortOrder) ? "desc" : "";
             ViewData["CurrentFilter"] = searchString;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
             var keywords = from k in _context.Kewords
                           select k;
@@ -61,7 +75,8 @@ namespace Bookshelf.Controllers
             {
                 keywords = keywords.OrderBy(a => a.KeywordID);
             }
-            return View(await keywords.AsNoTracking().ToListAsync());
+            int pageSize = 5;
+            return View(await PaginatedList<Keyword>.CreateAsync(keywords.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Keywords/Create
