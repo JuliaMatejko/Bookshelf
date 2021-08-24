@@ -1,14 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Bookshelf.Data;
 using Bookshelf.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 
 namespace Bookshelf.Controllers
 {
@@ -22,21 +19,34 @@ namespace Bookshelf.Controllers
 
         // GET: UserBooks
         [Authorize]
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
             ClaimsPrincipal currentUser = User;
             var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
             ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
             ViewData["CurrentFilter"] = searchString;
 
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
             var userbooks = from ub in _context.UsersBooks
-                        .Where(s => s.ApplicationUserID == currentUserID)
-                        .Include(b => b.Book)
-                            .ThenInclude(u => u.AuthorsBooks)
-                                .ThenInclude(a => a.Author)
-                        select ub;
+                            .Where(s => s.ApplicationUserID == currentUserID)
+                            .Include(b => b.Book)
+                                .ThenInclude(u => u.AuthorsBooks)
+                                    .ThenInclude(a => a.Author)
+                            select ub;
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 userbooks = userbooks.Where(a => a.Book.Title.Contains(searchString));
@@ -56,7 +66,8 @@ namespace Bookshelf.Controllers
                     userbooks = userbooks.OrderBy(b => b.Book.AuthorsBooks.Select(s => s.Author.LastName).FirstOrDefault());
                     break;
             }
-            return View(await userbooks.AsNoTracking().ToListAsync());
+            int pageSize = 5;
+            return View(await PaginatedList<UserBook>.CreateAsync(userbooks.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: UserBooks/Details/5

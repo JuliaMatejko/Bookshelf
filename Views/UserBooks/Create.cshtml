@@ -44,7 +44,6 @@ else
                 <div class="form-group">
                     <label asp-for="BookStatus" class="control-label"></label>
                     <select asp-for="BookStatus" class="form-control" asp-items="Html.GetEnumSelectList<BookStatus>()">
-                        <option>Choose book status...</option>
                     </select>
                     <span asp-validation-for="BookStatus" class="text-danger"></span>
                 </div>
@@ -61,7 +60,7 @@ else
                 <br />
                 <div class="form-group">
                     <a class="btn btn-outline-secondary" asp-controller="Books" asp-action="Details" asp-route-id="@Model.BookID"><i class="fas fa-angle-left"></i> Back to Details</a>
-                    <input type="submit" value="Create" class="btn btn-success" />
+                    <input type="submit" value="Add" class="btn btn-success" />
                 </div>
             </form>
         </div>

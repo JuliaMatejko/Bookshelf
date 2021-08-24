@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bookshelf.Models.UserBook>
+﻿@model PaginatedList<Bookshelf.Models.UserBook>
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<IdentityUser> UserManager
 
@@ -21,14 +21,14 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["LastNameSortParm"]">Author <i class="fas fa-sort"></i></a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LastNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Author <i class="fas fa-sort"></i></a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]">@Html.DisplayNameFor(model => model.Book.Title) <i class="fas fa-sort"></i></a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TitleSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Book <i class="fas fa-sort"></i></a>
             </th>
             <th></th>
             <th class="text-center">
-                @Html.DisplayNameFor(model => model.BookStatus)
+                Book Status
             </th>
         </tr>
     </thead>
@@ -47,7 +47,7 @@
                         }
                         else
                         {
-                            <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span>
+                            <span>@Html.DisplayFor(modelItem => i.Author.FullName), </span><br />
                         }
                     }
                 </td>
@@ -75,3 +75,23 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-info @prevDisabled">
+    <i class="fas fa-angle-left"></i> Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-info @nextDisabled">
+    Next <i class="fas fa-angle-right"></i>
+</a>
