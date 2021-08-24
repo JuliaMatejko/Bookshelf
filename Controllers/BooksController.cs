@@ -20,8 +20,13 @@ namespace Bookshelf.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+           string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["LastNameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "lastname_desc" : "";
             ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" : "Title";
             ViewData["CurrentFilter"] = searchString;
@@ -30,6 +35,16 @@ namespace Bookshelf.Controllers
                         .Include(b => b.AuthorsBooks)
                             .ThenInclude(e => e.Author)
                         select s;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 books = books.Where(a => a.Title.Contains(searchString));
@@ -49,7 +64,8 @@ namespace Bookshelf.Controllers
                     books = books.OrderBy(a => a.AuthorsBooks.Select(s => s.Author.LastName).FirstOrDefault());
                     break;
             }
-            return View(await books.AsNoTracking().ToListAsync());
+            int pageSize = 5;
+            return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Books/Details/5
