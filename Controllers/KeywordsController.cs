@@ -25,7 +25,7 @@ namespace Bookshelf.Controllers
                 return NotFound();
             }
 
-            var keyword = await _context.Kewords
+            var keyword = await _context.Keywords
                 .Include(b => b.BookKeyword)
                     .ThenInclude(e => e.Book)
                         .ThenInclude(f => f.AuthorsBooks)
@@ -61,7 +61,7 @@ namespace Bookshelf.Controllers
                 searchString = currentFilter;
             }
 
-            var keywords = from k in _context.Kewords
+            var keywords = from k in _context.Keywords
                           select k;
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -110,7 +110,7 @@ namespace Bookshelf.Controllers
                 return NotFound();
             }
 
-            var keyword = await _context.Kewords
+            var keyword = await _context.Keywords
                 .FirstOrDefaultAsync(m => m.KeywordID == id);
             if (keyword == null)
             {
@@ -126,15 +126,15 @@ namespace Bookshelf.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var keyword = await _context.Kewords.FindAsync(id);
-            _context.Kewords.Remove(keyword);
+            var keyword = await _context.Keywords.FindAsync(id);
+            _context.Keywords.Remove(keyword);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool KeywordExists(string id)
         {
-            return _context.Kewords.Any(e => e.KeywordID == id);
+            return _context.Keywords.Any(e => e.KeywordID == id);
         }
     }
 }

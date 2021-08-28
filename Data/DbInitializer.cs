@@ -12,7 +12,7 @@ namespace Bookshelf.Data
         {
             context.Database.EnsureCreated();
 
-            if (context.Kewords.Any())
+            if (context.Keywords.Any())
             {
                 return;
             }
@@ -33,7 +33,7 @@ namespace Bookshelf.Data
             };
             foreach (Keyword k in keywords)
             {
-                context.Kewords.Add(k);
+                context.Keywords.Add(k);
             }
             context.SaveChanges();
 

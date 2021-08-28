@@ -111,7 +111,7 @@ namespace Bookshelf.Controllers
 
         private void PopulateAssignedKeywordData(Book book)
         {
-            var allKeywords = _context.Kewords;
+            var allKeywords = _context.Keywords;
             var bookKeywords = new HashSet<string>(book.BooksKeywords.Select(c => c.KeywordID));
             var viewModel = new List<AssignedKeywordData>();
             foreach (var keyword in allKeywords)
@@ -285,7 +285,7 @@ namespace Bookshelf.Controllers
             var selectedKeywordsHS = new HashSet<string>(selectedKeywords);
             var booksKeywords = new HashSet<string>
                 (bookToUpdate.BooksKeywords.Select(k => k.Keyword.KeywordID));
-            foreach (var keyword in _context.Kewords)
+            foreach (var keyword in _context.Keywords)
             {
                 if (selectedKeywordsHS.Contains(keyword.KeywordID))
                 {
